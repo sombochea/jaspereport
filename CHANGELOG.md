@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **CI/CD Pipeline** - Complete GitHub Actions workflows
+  - Multi-OS testing (Ubuntu, macOS, Windows)
+  - Multi-architecture Docker builds (linux/amd64, linux/arm64)
+  - Automatic publishing to GitHub Container Registry
+  - Security scanning with Trivy
+  - Code quality checks
+  - Dependency scanning
+  - Automated releases
+- **Docker Support** - Production-ready Docker configuration
+  - Multi-architecture images
+  - Docker Compose setup
+  - Health checks
+  - Volume mounts for persistence
+  - Non-root user security
+  - Optimized Alpine-based image
 - **Template CRUD System** - Complete template management with database persistence
   - Create, read, update, delete templates via API
   - Database persistence using H2

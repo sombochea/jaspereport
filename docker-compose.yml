@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  jasperreports:
+    image: ghcr.io/${GITHUB_REPOSITORY:-username/jaspereport}:${IMAGE_TAG:-latest}
+    container_name: jasperreports-api
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      # Mount templates directory
+      - ./templates:/app/templates:ro
+      # Mount fonts directory
+      - ./fonts:/app/fonts:ro
+      # Mount data directory for database persistence
+      - jasperreports-data:/app/data
+    environment:
+      # Java options
+      - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
+      # Application settings
+      - TZ=${TZ:-UTC}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    networks:
+      - jasperreports-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  jasperreports-data:
+    driver: local
+
+networks:
+  jasperreports-network:
+    driver: bridge

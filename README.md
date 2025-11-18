@@ -61,6 +61,10 @@ curl -X POST http://localhost:8080/api/reports/generate \
 - **[Khmer Fonts List](docs/KHMER_FONTS_LIST.md)** - 20+ available Khmer fonts
 - **[Khmer Troubleshooting](docs/KHMER_FONTS_TROUBLESHOOTING.md)** - Common issues and solutions
 
+### Deployment & Operations
+- **[Docker Guide](docs/DOCKER.md)** - Docker deployment guide
+- **[CI/CD Documentation](docs/CICD.md)** - GitHub Actions workflows
+
 ### Complete Reference
 - **[Project Summary](docs/PROJECT_SUMMARY.md)** - Comprehensive project documentation
 
@@ -204,6 +208,31 @@ Font files are stored in: `fonts/`
 
 ## 🚢 Deployment
 
+### Docker (Recommended)
+
+Multi-architecture Docker images are available on GitHub Container Registry:
+
+```bash
+# Pull the image
+docker pull ghcr.io/sombochea/jaspereport:latest
+
+# Run with Docker
+docker run -d -p 8080:8080 \
+  -v $(pwd)/templates:/app/templates \
+  -v $(pwd)/fonts:/app/fonts \
+  -v $(pwd)/data:/app/data \
+  ghcr.io/sombochea/jaspereport:latest
+
+# Or use Docker Compose
+docker-compose up -d
+```
+
+**Supported Architectures:**
+- linux/amd64 (x86_64)
+- linux/arm64 (ARM64, Apple Silicon)
+
+See [Docker Guide](docs/DOCKER.md) for complete documentation.
+
 ### Build Fat JAR
 
 ```bash
@@ -218,7 +247,7 @@ Output: `build/libs/jaspereport-all.jar`
 java -jar build/libs/jaspereport-all.jar
 ```
 
-### Docker (Optional)
+### Build Docker Image Locally
 
 ```bash
 ./gradlew buildImage

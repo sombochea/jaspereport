@@ -37,6 +37,9 @@ out/
 .DS_Store
 
 ### JasperReports Service ###
+# Environment files
+.env
+
 # Font files (keep directory structure)
 fonts/*.ttf
 fonts/*.otf
