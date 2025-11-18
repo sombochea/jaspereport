@@ -1,0 +1,128 @@
+package com.cubis.jasper
+
+import net.sf.jasperreports.engine.*
+import net.sf.jasperreports.engine.export.HtmlExporter
+import net.sf.jasperreports.engine.export.JRCsvExporter
+import net.sf.jasperreports.engine.export.JRGraphics2DExporter
+import net.sf.jasperreports.engine.export.JRRtfExporter
+import net.sf.jasperreports.engine.export.oasis.JROdsExporter
+import net.sf.jasperreports.engine.export.oasis.JROdtExporter
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
+
+enum class ExportFormat {
+    PDF, HTML, XML, CSV, XLSX, DOCX, RTF, ODT, ODS, PNG, JPEG
+}
+
+class JasperReportService {
+    
+    fun compileReport(jrxmlInputStream: InputStream): JasperReport {
+        return JasperCompileManager.compileReport(jrxmlInputStream)
+    }
+    
+    fun compileReport(jrxmlFile: File): JasperReport {
+        return JasperCompileManager.compileReport(jrxmlFile.absolutePath)
+    }
+    
+    fun fillReport(jasperReport: JasperReport, parameters: Map<String, Any?>, dataSource: JRDataSource? = null): JasperPrint {
+        return if (dataSource != null) {
+            JasperFillManager.fillReport(jasperReport, parameters, dataSource)
+        } else {
+            JasperFillManager.fillReport(jasperReport, parameters, JREmptyDataSource())
+        }
+    }
+    
+    fun exportReport(jasperPrint: JasperPrint, format: ExportFormat): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        
+        when (format) {
+            ExportFormat.PDF -> {
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream)
+            }
+            ExportFormat.HTML -> {
+                val exporter = HtmlExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleHtmlExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.XML -> {
+                JasperExportManager.exportReportToXmlStream(jasperPrint, outputStream)
+            }
+            ExportFormat.CSV -> {
+                val exporter = JRCsvExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleWriterExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.XLSX -> {
+                val exporter = JRXlsxExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleOutputStreamExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.DOCX -> {
+                val exporter = JRDocxExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleOutputStreamExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.RTF -> {
+                val exporter = JRRtfExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleWriterExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.ODT -> {
+                val exporter = JROdtExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleOutputStreamExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.ODS -> {
+                val exporter = JROdsExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleOutputStreamExporterOutput(outputStream))
+                exporter.exportReport()
+            }
+            ExportFormat.PNG -> {
+                val exporter = JRGraphics2DExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleGraphics2DExporterOutput())
+                exporter.exportReport()
+            }
+            ExportFormat.JPEG -> {
+                val exporter = JRGraphics2DExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleGraphics2DExporterOutput())
+                exporter.exportReport()
+            }
+        }
+        
+        return outputStream.toByteArray()
+    }
+    
+    fun renderReport(
+        jrxmlInputStream: InputStream,
+        parameters: Map<String, Any?>,
+        format: ExportFormat,
+        dataSource: JRDataSource? = null
+    ): ByteArray {
+        val jasperReport = compileReport(jrxmlInputStream)
+        val jasperPrint = fillReport(jasperReport, parameters, dataSource)
+        return exportReport(jasperPrint, format)
+    }
+    
+    fun renderFromTemplateFile(
+        jrxmlFile: File,
+        parameters: Map<String, Any?>,
+        format: ExportFormat,
+        dataSource: JRDataSource? = null
+    ): ByteArray {
+        val jasperReport = compileReport(jrxmlFile)
+        val jasperPrint = fillReport(jasperReport, parameters, dataSource)
+        return exportReport(jasperPrint, format)
+    }
+}
