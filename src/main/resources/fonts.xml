@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Kh Content">
+        <normal><![CDATA[/Users/cubetiq/projects/jaspereport/fonts/Kh-Content.ttf]]></normal>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+        <exportFonts/>
+    </fontFamily>
+    <fontFamily name="Hanuman">
+        <normal><![CDATA[/Users/cubetiq/projects/jaspereport/fonts/Hanuman-Regular.ttf]]></normal>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+        <exportFonts/>
+    </fontFamily>
+    <fontFamily name="KhmerOS">
+        <normal><![CDATA[/Users/cubetiq/projects/jaspereport/fonts/KhmerOS.ttf]]></normal>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+        <exportFonts/>
+    </fontFamily>
+</fontFamilies>

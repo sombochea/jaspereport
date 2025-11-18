@@ -205,5 +205,105 @@ fun Route.fontRoutes() {
             FontRegistry.clearAllFonts()
             call.respond(mapOf("message" to "All fonts cleared"))
         }
+        
+        // Get font extensions status
+        get("/extensions") {
+            val hasFontExtensions = JasperFontExtensionManager.hasFontExtensions()
+            val fontsXml = JasperFontExtensionManager.getFontsXmlContent()
+            val extensionProperties = JasperFontExtensionManager.getExtensionPropertiesContent()
+            
+            call.respond(mapOf(
+                "hasExtensions" to hasFontExtensions,
+                "fontsXml" to fontsXml,
+                "extensionProperties" to extensionProperties,
+                "registeredFontsCount" to FontRegistry.getRegisteredFonts().size
+            ))
+        }
+        
+        // Regenerate font extensions
+        post("/extensions/regenerate") {
+            JasperFontExtensionManager.generateFontExtensions()
+            call.respond(mapOf(
+                "message" to "Font extensions regenerated",
+                "fontsCount" to FontRegistry.getRegisteredFonts().size
+            ))
+        }
+    }
+    
+    // Google Fonts integration
+    route("/api/google-fonts") {
+        
+        // Download and register a font from Google Fonts
+        post("/download") {
+            val request = call.receive<Map<String, Any>>()
+            val fontFamily = request["fontFamily"] as? String
+            val apiKey = request["apiKey"] as? String
+            val variantsRaw = request["variants"] as? List<*>
+            val variants = variantsRaw?.mapNotNull { it as? String } ?: listOf("regular", "700", "italic", "700italic")
+            
+            if (fontFamily == null) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "fontFamily is required")
+                )
+                return@post
+            }
+            
+            val result = GoogleFontsService.downloadAndRegisterFont(fontFamily, apiKey, variants)
+            
+            if (result.isSuccess) {
+                call.respond(
+                    HttpStatusCode.Created,
+                    mapOf(
+                        "message" to result.getOrNull(),
+                        "fontFamily" to fontFamily
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    mapOf("error" to result.exceptionOrNull()?.message)
+                )
+            }
+        }
+        
+        // Quick register popular fonts
+        post("/quick-register/{fontName}") {
+            val fontName = call.parameters["fontName"]
+            
+            if (fontName == null) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Font name is required"))
+                return@post
+            }
+            
+            val result = GoogleFontsService.downloadAndRegisterFont(fontName)
+            
+            if (result.isSuccess) {
+                call.respond(
+                    HttpStatusCode.Created,
+                    mapOf(
+                        "message" to result.getOrNull(),
+                        "fontFamily" to fontName
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    mapOf("error" to result.exceptionOrNull()?.message)
+                )
+            }
+        }
+        
+        // List downloaded Google Fonts
+        get("/downloaded") {
+            val fonts = GoogleFontsService.listDownloadedFonts()
+            call.respond(mapOf("fonts" to fonts))
+        }
+        
+        // Clear Google Fonts cache
+        delete("/cache") {
+            GoogleFontsService.clearCache()
+            call.respond(mapOf("message" to "Google Fonts cache cleared"))
+        }
     }
 }

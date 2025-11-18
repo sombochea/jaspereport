@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="custom-font-example" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenNoDataType="AllSectionsNoDetail">
+    
+    <!-- This property allows graceful fallback if font is not found -->
+    <property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+    
+    <!-- Parameters -->
+    <parameter name="title" class="java.lang.String"/>
+    <parameter name="subtitle" class="java.lang.String"/>
+    <parameter name="content" class="java.lang.String"/>
+    <parameter name="author" class="java.lang.String"/>
+    
+    <!-- Title Section -->
+    <title>
+        <band height="120">
+            <!-- Main Title with Roboto Bold -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="20" width="555" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Roboto" size="28" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Subtitle with Roboto Italic -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="60" width="555" height="25"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Roboto" size="16" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{subtitle}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Horizontal Line -->
+            <line>
+                <reportElement x="50" y="95" width="455" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="2.0" lineStyle="Solid"/>
+                </graphicElement>
+            </line>
+        </band>
+    </title>
+    
+    <!-- Page Header -->
+    <pageHeader>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="5" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Roboto" size="10" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Custom Font Example Report]]></text>
+            </staticText>
+        </band>
+    </pageHeader>
+    
+    <!-- Detail Section -->
+    <detail>
+        <band height="200">
+            <!-- Content with Roboto Regular -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="30" y="20" width="495" height="150"/>
+                <textElement textAlignment="Justified">
+                    <font fontName="Roboto" size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{content}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    
+    <!-- Page Footer -->
+    <pageFooter>
+        <band height="50">
+            <!-- Author -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="30" y="10" width="250" height="20"/>
+                <textElement>
+                    <font fontName="Roboto" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Author: " + $P{author}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Page Number -->
+            <textField>
+                <reportElement x="400" y="10" width="125" height="20"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Roboto" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            
+            <!-- Date -->
+            <textField pattern="MMMM dd, yyyy">
+                <reportElement x="30" y="30" width="250" height="15"/>
+                <textElement>
+                    <font fontName="Roboto" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>

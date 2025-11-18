@@ -35,3 +35,34 @@ out/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+### JasperReports Service ###
+# Font files (keep directory structure)
+fonts/*.ttf
+fonts/*.otf
+fonts/*.ttc
+fonts/google-fonts/
+!fonts/.gitkeep
+
+# Compiled templates
+templates/*.jasper
+
+# Database files
+data/*.mv.db
+data/*.trace.db
+data/*.lock
+!data/.gitkeep
+
+# Generated reports (test outputs)
+*.pdf
+*.xlsx
+*.xls
+*.docx
+*.png
+*.jpg
+*.jpeg
+!khmer-report.pdf
+
+# Temporary files
+test-*.pdf
+test-*.xlsx

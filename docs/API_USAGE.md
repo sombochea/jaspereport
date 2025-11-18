@@ -162,29 +162,55 @@ Error responses include a JSON body with details:
 }
 ```
 
+## Google Fonts Integration 🎨
+
+The easiest way to add custom fonts! Download and register Google Fonts with a single command.
+
+See [GOOGLE_FONTS.md](GOOGLE_FONTS.md) for complete documentation.
+
+**Quick Start:**
+```bash
+# Register Roboto font (one command!)
+curl -X POST http://localhost:8080/api/google-fonts/quick-register/Roboto
+
+# Register Open Sans
+curl -X POST "http://localhost:8080/api/google-fonts/quick-register/Open%20Sans"
+
+# Register Noto Sans (best for multilingual)
+curl -X POST "http://localhost:8080/api/google-fonts/quick-register/Noto%20Sans"
+
+# List downloaded fonts
+curl http://localhost:8080/api/google-fonts/downloaded
+```
+
+**Supported Popular Fonts:**
+- Roboto
+- Open Sans
+- Noto Sans
+- And more with Google Fonts API key!
+
 ## Font Registry
 
-The service includes a dynamic font registry for managing custom fonts. This is essential for proper UTF-8 and multilingual support.
+For advanced font management, upload custom fonts or register from file paths.
 
-See [FONT_REGISTRY.md](FONT_REGISTRY.md) for complete font management documentation.
+See [FONT_REGISTRY.md](FONT_REGISTRY.md) for complete documentation.
 
-**Quick Example:**
+**Upload Custom Font:**
 ```bash
-# Register a custom font
+curl -X POST http://localhost:8080/api/fonts/register \
+  -F "name=CustomFont" \
+  -F "normal=@/path/to/font-regular.ttf" \
+  -F "bold=@/path/to/font-bold.ttf"
+```
+
+**Register from Path:**
+```bash
 curl -X POST http://localhost:8080/api/fonts/register-path \
   -H "Content-Type: application/json" \
   -d '{
     "name": "CustomFont",
-    "normalPath": "/path/to/font.ttf",
-    "pdfEncoding": "Identity-H",
-    "pdfEmbedded": true
+    "normalPath": "/path/to/font.ttf"
   }'
-
-# List registered fonts
-curl http://localhost:8080/api/fonts
-
-# Remove a font
-curl -X DELETE http://localhost:8080/api/fonts/CustomFont
 ```
 
 ## UTF-8 Support
