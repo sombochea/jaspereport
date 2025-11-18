@@ -45,7 +45,8 @@ curl -X POST "http://localhost:8080/api/reports/render/sample-report?format=PDF"
 
 ## Documentation
 
-See [API_USAGE.md](API_USAGE.md) for detailed API documentation and examples.
+- [API_USAGE.md](API_USAGE.md) - Complete API documentation and examples
+- [FONT_REGISTRY.md](FONT_REGISTRY.md) - Font management and UTF-8 support
 
 ## Project Structure
 

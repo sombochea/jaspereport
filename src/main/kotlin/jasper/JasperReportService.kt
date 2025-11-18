@@ -1,17 +1,16 @@
 package com.cubis.jasper
 
 import net.sf.jasperreports.engine.*
-import net.sf.jasperreports.engine.export.HtmlExporter
-import net.sf.jasperreports.engine.export.JRCsvExporter
-import net.sf.jasperreports.engine.export.JRGraphics2DExporter
-import net.sf.jasperreports.engine.export.JRRtfExporter
+import net.sf.jasperreports.engine.export.*
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
+import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import javax.imageio.ImageIO
 
 enum class ExportFormat {
     PDF, HTML, XML, CSV, XLSX, DOCX, RTF, ODT, ODS, PNG, JPEG
@@ -28,10 +27,23 @@ class JasperReportService {
     }
     
     fun fillReport(jasperReport: JasperReport, parameters: Map<String, Any?>, dataSource: JRDataSource? = null): JasperPrint {
+        // Add default parameters for UTF-8 encoding and proper rendering
+        val params = parameters.toMutableMap()
+        
+        // Set locale for proper character rendering
+        if (!params.containsKey("REPORT_LOCALE")) {
+            params["REPORT_LOCALE"] = java.util.Locale.getDefault()
+        }
+        
+        // Enable font extension for better Unicode support
+        if (!params.containsKey("net.sf.jasperreports.awt.ignore.missing.font")) {
+            params["net.sf.jasperreports.awt.ignore.missing.font"] = "true"
+        }
+        
         return if (dataSource != null) {
-            JasperFillManager.fillReport(jasperReport, parameters, dataSource)
+            JasperFillManager.fillReport(jasperReport, params, dataSource)
         } else {
-            JasperFillManager.fillReport(jasperReport, parameters, JREmptyDataSource())
+            JasperFillManager.fillReport(jasperReport, params, JREmptyDataSource())
         }
     }
     
@@ -40,7 +52,17 @@ class JasperReportService {
         
         when (format) {
             ExportFormat.PDF -> {
-                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream)
+                val exporter = JRPdfExporter()
+                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
+                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleOutputStreamExporterOutput(outputStream))
+                
+                val configuration = net.sf.jasperreports.export.SimplePdfExporterConfiguration()
+                exporter.setConfiguration(configuration)
+                
+                val reportConfiguration = net.sf.jasperreports.export.SimplePdfReportConfiguration()
+                exporter.setConfiguration(reportConfiguration)
+                
+                exporter.exportReport()
             }
             ExportFormat.HTML -> {
                 val exporter = HtmlExporter()
@@ -88,16 +110,64 @@ class JasperReportService {
                 exporter.exportReport()
             }
             ExportFormat.PNG -> {
-                val exporter = JRGraphics2DExporter()
-                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
-                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleGraphics2DExporterOutput())
-                exporter.exportReport()
+                // Render each page as PNG image
+                val images = mutableListOf<BufferedImage>()
+                for (pageIndex in 0 until jasperPrint.pages.size) {
+                    val image = BufferedImage(
+                        jasperPrint.pageWidth + 1,
+                        jasperPrint.pageHeight + 1,
+                        BufferedImage.TYPE_INT_RGB
+                    )
+                    
+                    val exporter = JRGraphics2DExporter()
+                    exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput.getInstance(listOf(jasperPrint)))
+                    
+                    val exporterOutput = net.sf.jasperreports.export.SimpleGraphics2DExporterOutput()
+                    exporterOutput.setGraphics2D(image.createGraphics())
+                    exporter.setExporterOutput(exporterOutput)
+                    
+                    val configuration = net.sf.jasperreports.export.SimpleGraphics2DReportConfiguration()
+                    configuration.pageIndex = pageIndex
+                    exporter.setConfiguration(configuration)
+                    
+                    exporter.exportReport()
+                    images.add(image)
+                }
+                
+                // Write first page as PNG (or combine multiple pages if needed)
+                if (images.isNotEmpty()) {
+                    ImageIO.write(images[0], "PNG", outputStream)
+                }
             }
             ExportFormat.JPEG -> {
-                val exporter = JRGraphics2DExporter()
-                exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput(jasperPrint))
-                exporter.setExporterOutput(net.sf.jasperreports.export.SimpleGraphics2DExporterOutput())
-                exporter.exportReport()
+                // Render each page as JPEG image
+                val images = mutableListOf<BufferedImage>()
+                for (pageIndex in 0 until jasperPrint.pages.size) {
+                    val image = BufferedImage(
+                        jasperPrint.pageWidth + 1,
+                        jasperPrint.pageHeight + 1,
+                        BufferedImage.TYPE_INT_RGB
+                    )
+                    
+                    val exporter = JRGraphics2DExporter()
+                    exporter.setExporterInput(net.sf.jasperreports.export.SimpleExporterInput.getInstance(listOf(jasperPrint)))
+                    
+                    val exporterOutput = net.sf.jasperreports.export.SimpleGraphics2DExporterOutput()
+                    exporterOutput.setGraphics2D(image.createGraphics())
+                    exporter.setExporterOutput(exporterOutput)
+                    
+                    val configuration = net.sf.jasperreports.export.SimpleGraphics2DReportConfiguration()
+                    configuration.pageIndex = pageIndex
+                    exporter.setConfiguration(configuration)
+                    
+                    exporter.exportReport()
+                    images.add(image)
+                }
+                
+                // Write first page as JPEG (or combine multiple pages if needed)
+                if (images.isNotEmpty()) {
+                    ImageIO.write(images[0], "JPEG", outputStream)
+                }
             }
         }
         

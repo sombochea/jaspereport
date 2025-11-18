@@ -1,5 +1,6 @@
 package com.cubis
 
+import com.cubis.jasper.fontRoutes
 import com.cubis.jasper.jasperReportRoutes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -12,5 +13,6 @@ fun Application.configureRouting() {
         }
         
         jasperReportRoutes()
+        fontRoutes()
     }
 }

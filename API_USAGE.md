@@ -162,6 +162,62 @@ Error responses include a JSON body with details:
 }
 ```
 
+## Font Registry
+
+The service includes a dynamic font registry for managing custom fonts. This is essential for proper UTF-8 and multilingual support.
+
+See [FONT_REGISTRY.md](FONT_REGISTRY.md) for complete font management documentation.
+
+**Quick Example:**
+```bash
+# Register a custom font
+curl -X POST http://localhost:8080/api/fonts/register-path \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "CustomFont",
+    "normalPath": "/path/to/font.ttf",
+    "pdfEncoding": "Identity-H",
+    "pdfEmbedded": true
+  }'
+
+# List registered fonts
+curl http://localhost:8080/api/fonts
+
+# Remove a font
+curl -X DELETE http://localhost:8080/api/fonts/CustomFont
+```
+
+## UTF-8 Support
+
+The service supports UTF-8 encoding for all formats:
+- PDF exports work with standard fonts (SansSerif, Serif, Monospaced)
+- For advanced Unicode support, register custom fonts via the Font Registry
+- All text parameters support Unicode characters
+
+**Note:** For full multilingual support (Chinese, Arabic, Japanese, etc.), you need to register fonts that support those character sets using the Font Registry API.
+
+## Image Export (PNG/JPEG)
+
+The service can export reports as images:
+- Each page is rendered as a separate image
+- Currently exports the first page only
+- Supports both PNG and JPEG formats
+- Image dimensions match the report page size
+
+```bash
+# Export as PNG
+curl -X POST "http://localhost:8080/api/reports/render/simple?format=PNG" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Image Report"}' \
+  -o report.png
+
+# Export as JPEG
+curl -X POST "http://localhost:8080/api/reports/render/simple?format=JPEG" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Image Report"}' \
+  -o report.jpg
+```
+
 ## Advanced Usage
 
 ### Using Data Sources
@@ -173,6 +229,13 @@ You can extend the `JasperReportService` to add custom export configurations for
 - Excel sheet names and formulas
 - Image resolution and quality
 - HTML styling options
+
+### Template UTF-8 Configuration
+Add these properties to your JRXML templates for proper UTF-8 support:
+```xml
+<property name="net.sf.jasperreports.export.pdf.encoding" value="UTF-8"/>
+<property name="net.sf.jasperreports.export.pdf.font.name" value="DejaVu Sans"/>
+```
 
 ## Dependencies
 - Ktor 3.3.2
