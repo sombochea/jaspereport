@@ -132,14 +132,18 @@ jobs:
       - name: Create Dockerfile
         run: |
           cat > Dockerfile << 'EOF'
-          FROM eclipse-temurin:17-jre-alpine
+          FROM eclipse-temurin:17-jre-jammy
           
           # Install required packages
-          RUN apk add --no-cache \
+          RUN apt-get update && apt-get install -y \
               fontconfig \
-              ttf-dejavu \
-              bash \
-              curl
+              fonts-dejavu \
+              curl \
+              && rm -rf /var/lib/apt/lists/*
+          
+          # Create app user
+          RUN groupadd -g 1000 appuser && \
+              useradd -u 1000 -g appuser -s /bin/bash -m appuser
           
           # Create app directory
           WORKDIR /app
@@ -148,7 +152,11 @@ jobs:
           COPY build/libs/*-all.jar app.jar
           
           # Create directories for data, templates, and fonts
-          RUN mkdir -p /app/data /app/templates /app/fonts
+          RUN mkdir -p /app/data /app/templates /app/fonts && \
+              chown -R appuser:appuser /app
+          
+          # Switch to non-root user
+          USER appuser
           
           # Expose port
           EXPOSE 8080
@@ -157,8 +165,11 @@ jobs:
           HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
             CMD curl -f http://localhost:8080/ || exit 1
           
+          # Environment variables
+          ENV JAVA_OPTS="-Xmx512m -Xms256m"
+          
           # Run the application
-          ENTRYPOINT ["java", "-jar", "app.jar"]
+          ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
           EOF
       
       - name: Build and push Docker image

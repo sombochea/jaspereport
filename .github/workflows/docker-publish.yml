@@ -71,19 +71,19 @@ jobs:
       - name: Create Dockerfile
         run: |
           cat > Dockerfile << 'EOF'
-          FROM eclipse-temurin:17-jre-alpine
+          FROM eclipse-temurin:17-jre-jammy
           
           # Install required packages for JasperReports
-          RUN apk add --no-cache \
+          RUN apt-get update && apt-get install -y \
               fontconfig \
-              ttf-dejavu \
-              ttf-liberation \
-              bash \
-              curl
+              fonts-dejavu \
+              fonts-liberation \
+              curl \
+              && rm -rf /var/lib/apt/lists/*
           
           # Create app user
-          RUN addgroup -g 1000 appuser && \
-              adduser -D -u 1000 -G appuser appuser
+          RUN groupadd -g 1000 appuser && \
+              useradd -u 1000 -g appuser -s /bin/bash -m appuser
           
           # Create app directory
           WORKDIR /app
