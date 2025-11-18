@@ -17,15 +17,16 @@ Complete documentation for the JasperReports API Service.
 8. **[Google Fonts Integration](GOOGLE_FONTS.md)** - Easy font downloads
 
 ### Template Development
-9. **[Using Fonts in Templates](USING_FONTS_IN_TEMPLATES.md)** - JRXML font configuration
+9. **[Template Management](TEMPLATE_MANAGEMENT.md)** - Complete CRUD API for templates ⭐
+10. **[Using Fonts in Templates](USING_FONTS_IN_TEMPLATES.md)** - JRXML font configuration
 
 ### Khmer Language Support
-10. **[Khmer Fonts Guide](KHMER_FONTS.md)** - Complete Khmer support guide 🇰🇭
-11. **[Khmer Fonts List](KHMER_FONTS_LIST.md)** - 20+ available Khmer fonts
-12. **[Khmer Troubleshooting](KHMER_FONTS_TROUBLESHOOTING.md)** - Common issues and solutions
+11. **[Khmer Fonts Guide](KHMER_FONTS.md)** - Complete Khmer support guide 🇰🇭
+12. **[Khmer Fonts List](KHMER_FONTS_LIST.md)** - 20+ available Khmer fonts
+13. **[Khmer Troubleshooting](KHMER_FONTS_TROUBLESHOOTING.md)** - Common issues and solutions
 
 ### Complete Reference
-13. **[Project Summary](PROJECT_SUMMARY.md)** - Comprehensive project documentation
+14. **[Project Summary](PROJECT_SUMMARY.md)** - Comprehensive project documentation
 
 ---
 

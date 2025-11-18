@@ -53,6 +53,7 @@ curl -X POST http://localhost:8080/api/reports/generate \
 - **[Google Fonts Integration](docs/GOOGLE_FONTS.md)** - Easy font downloads
 
 ### Template Development
+- **[Template Management](docs/TEMPLATE_MANAGEMENT.md)** - Complete CRUD API for templates
 - **[Using Fonts in Templates](docs/USING_FONTS_IN_TEMPLATES.md)** - JRXML font configuration
 
 ### Khmer Language Support

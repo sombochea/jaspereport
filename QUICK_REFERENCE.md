@@ -38,6 +38,52 @@ curl -X POST http://localhost:8080/api/reports/generate \
   --output report.docx
 ```
 
+## 📝 Template Management
+
+### List Templates
+```bash
+curl http://localhost:8080/api/templates
+```
+
+### Get Template
+```bash
+curl http://localhost:8080/api/templates/simple
+```
+
+### Create Template
+```bash
+curl -X POST http://localhost:8080/api/templates \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-template",
+    "content": "<?xml version=\"1.0\"?><jasperReport>...</jasperReport>",
+    "description": "My template",
+    "category": "custom"
+  }'
+```
+
+### Upload Template
+```bash
+curl -X POST http://localhost:8080/api/templates/upload \
+  -F "file=@template.jrxml" \
+  -F "description=My template"
+```
+
+### Update Template
+```bash
+curl -X PUT http://localhost:8080/api/templates/my-template \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "<?xml version=\"1.0\"?><jasperReport>...</jasperReport>",
+    "description": "Updated"
+  }'
+```
+
+### Delete Template
+```bash
+curl -X DELETE http://localhost:8080/api/templates/my-template
+```
+
 ## 🎨 Font Management
 
 ### List Fonts

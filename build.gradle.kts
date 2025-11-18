@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.jasperreports.fonts)
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.java.time)
     implementation(libs.h2.database)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Template CRUD System** - Complete template management with database persistence
+  - Create, read, update, delete templates via API
+  - Database persistence using H2
+  - File system synchronization
+  - Category organization
+  - Template upload support
+  - Version tracking (created/updated timestamps)
+  - Template statistics
+  - Automatic import from file system on startup
 - **Font Persistence System** - Automatic font persistence using H2 database
   - Fonts are saved to database on registration
   - Fonts are automatically loaded on application startup
